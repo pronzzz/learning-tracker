@@ -21,21 +21,12 @@ An Android application built to track personal learning progression. Optimized f
 - **Widgets**: Jetpack Glance.
 - **Language**: Kotlin (2.1.0).
 
-## Project Setup & Build
+## Installation
 
-This project uses modern Gradle configurations (AGP 9+). Due to AGP 9 incompatibilities with Hilt, the app uses a manual Dependency Injection service locator pattern (`LearningTrackerApplication.kt`).
-
-To build the project:
-1. Clone the repository.
-2. Open in Android Studio.
-3. Build the APK:
-```bash
-./gradlew assembleDebug
-```
-To generate a release build:
-```bash
-./gradlew assembleRelease
-```
+You can download the latest version of the app directly from the [Releases page](https://github.com/pronzzz/learning-tracker/releases).
+1. Download the `LearningTracker.apk` file from the latest release.
+2. Transfer it to your Android device (if downloading on a computer).
+3. Open the APK file to install it (you may need to grant permission to "Install unknown apps").
 
 ## Contributing
 
@@ -46,7 +37,7 @@ Contributions are welcome! Please follow these steps:
 4. Push to the branch (`git push origin feature/AmazingFeature`).
 5. Open a Pull Request.
 
-Please ensure all new UI components follow the existing "Liquid Glass" theme guidelines in `Theme.kt`.
+Please ensure all new UI components follow the existing "Liquid Glass" theme guidelines in `Theme.kt`. To build the project locally, open it in Android Studio and let Gradle sync.
 
 ## License
 
