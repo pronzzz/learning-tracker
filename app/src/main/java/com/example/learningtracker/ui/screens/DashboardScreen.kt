@@ -17,10 +17,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.learningtracker.ui.viewmodels.DashboardViewModel
 import com.example.learningtracker.ui.viewmodels.ViewModelFactory
+import com.example.learningtracker.ui.screens.ProjectCard
 
 @Composable
 fun DashboardScreen(
     modifier: Modifier = Modifier,
+    onProjectClick: (Long) -> Unit = {},
     viewModel: DashboardViewModel = viewModel(factory = ViewModelFactory())
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -84,7 +86,7 @@ fun DashboardScreen(
                         Text("Active Projects", fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
                     }
                     items(state.activeProjects) { project ->
-                        ProjectCard(project)
+                        ProjectCard(project, onClick = { onProjectClick(project.id) })
                     }
                 } else {
                     item {

@@ -46,9 +46,25 @@ fun AppNavigation() {
             backStack = backStack,
             onBack = { backStack.removeLastOrNull() },
             entryProvider = entryProvider {
-                entry<DashboardRoute> { DashboardScreen(modifier = Modifier.padding(innerPadding)) }
+                entry<DashboardRoute> { 
+                    DashboardScreen(
+                        modifier = Modifier.padding(innerPadding),
+                        onProjectClick = { projectId -> backStack.add(ProjectDetailRoute(projectId)) }
+                    ) 
+                }
                 entry<TopicsRoute> { TopicsScreen(modifier = Modifier.padding(innerPadding)) }
-                entry<ProjectsRoute> { ProjectsScreen(modifier = Modifier.padding(innerPadding)) }
+                entry<ProjectsRoute> { 
+                    ProjectsScreen(
+                        modifier = Modifier.padding(innerPadding),
+                        onProjectClick = { projectId -> backStack.add(ProjectDetailRoute(projectId)) }
+                    ) 
+                }
+                entry<ProjectDetailRoute> { route ->
+                    com.example.learningtracker.ui.screens.ProjectDetailScreen(
+                        projectId = route.projectId,
+                        onNavigateBack = { backStack.removeLastOrNull() }
+                    )
+                }
             },
         )
     }

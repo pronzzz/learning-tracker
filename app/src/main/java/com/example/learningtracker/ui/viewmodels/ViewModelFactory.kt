@@ -20,6 +20,10 @@ class ViewModelFactory : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             return DashboardViewModel(repository) as T
         }
+        if (modelClass.isAssignableFrom(ProjectDetailViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return ProjectDetailViewModel(repository) as T
+        }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

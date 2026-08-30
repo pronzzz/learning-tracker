@@ -25,6 +25,7 @@ import com.example.learningtracker.ui.viewmodels.ViewModelFactory
 @Composable
 fun ProjectsScreen(
     modifier: Modifier = Modifier,
+    onProjectClick: (Long) -> Unit = {},
     viewModel: ProjectsViewModel = viewModel(factory = ViewModelFactory())
 ) {
     val projects by viewModel.projects.collectAsStateWithLifecycle()
@@ -62,7 +63,7 @@ fun ProjectsScreen(
                 }
                 
                 items(projects) { project ->
-                    ProjectCard(project = project)
+                    ProjectCard(project = project, onClick = { onProjectClick(project.id) })
                 }
             }
         }
@@ -94,13 +95,13 @@ fun ProjectsScreen(
 }
 
 @Composable
-fun ProjectCard(project: Project) {
+fun ProjectCard(project: Project, onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(28.dp))
             .background(MaterialTheme.colorScheme.surface)
-            .clickable { /* Navigate to Tasks/Details */ }
+            .clickable { onClick() }
             .padding(24.dp)
     ) {
         Column {
