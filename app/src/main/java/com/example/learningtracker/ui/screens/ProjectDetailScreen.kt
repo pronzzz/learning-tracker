@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Link
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -55,14 +56,15 @@ fun ProjectDetailScreen(
             TopAppBar(
                 title = { 
                     Column {
+                        val project = state.project
                         Text(
-                            state.project?.title ?: "Loading...", 
+                            project?.title ?: "Loading...", 
                             maxLines = 1, 
                             fontWeight = FontWeight.SemiBold
                         )
-                        if (state.project != null) {
-                            val hours = state.project.timeSpentMillis / (1000 * 60 * 60)
-                            val minutes = (state.project.timeSpentMillis / (1000 * 60)) % 60
+                        if (project != null) {
+                            val hours = project.timeSpentMillis / (1000 * 60 * 60)
+                            val minutes = (project.timeSpentMillis / (1000 * 60)) % 60
                             Text(
                                 "${hours}h ${minutes}m spent", 
                                 fontSize = 12.sp,
