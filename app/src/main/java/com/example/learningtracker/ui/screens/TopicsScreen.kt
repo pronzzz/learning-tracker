@@ -62,8 +62,11 @@ fun TopicsScreen(
                     }
                 }
                 
-                items(topics) { topic ->
-                    TopicCard(topic = topic)
+                items(items = topics, key = { it.id }) { topic ->
+                    TopicCard(
+                        topic = topic,
+                        modifier = Modifier.animateItem()
+                    )
                 }
             }
         }
@@ -93,9 +96,9 @@ fun TopicsScreen(
 }
 
 @Composable
-fun TopicCard(topic: Topic) {
+fun TopicCard(topic: Topic, modifier: Modifier = Modifier) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(28.dp))
             .background(MaterialTheme.colorScheme.surface)

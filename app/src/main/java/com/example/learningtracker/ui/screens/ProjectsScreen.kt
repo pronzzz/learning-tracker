@@ -62,8 +62,12 @@ fun ProjectsScreen(
                     }
                 }
                 
-                items(projects) { project ->
-                    ProjectCard(project = project, onClick = { onProjectClick(project.id) })
+                items(items = projects, key = { it.id }) { project ->
+                    ProjectCard(
+                        project = project, 
+                        onClick = { onProjectClick(project.id) },
+                        modifier = Modifier.animateItem()
+                    )
                 }
             }
         }
@@ -95,9 +99,9 @@ fun ProjectsScreen(
 }
 
 @Composable
-fun ProjectCard(project: Project, onClick: () -> Unit) {
+fun ProjectCard(project: Project, modifier: Modifier = Modifier, onClick: () -> Unit) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(28.dp))
             .background(MaterialTheme.colorScheme.surface)

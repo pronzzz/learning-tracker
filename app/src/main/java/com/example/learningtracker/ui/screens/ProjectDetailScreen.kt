@@ -48,20 +48,39 @@ fun ProjectDetailScreen(
     var showAddTaskDialog by remember { mutableStateOf(false) }
     var showAddResourceDialog by remember { mutableStateOf(false) }
     var showAddNoteDialog by remember { mutableStateOf(false) }
+    var showTimerDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { 
-                    Text(
-                        state.project?.title ?: "Loading...", 
-                        maxLines = 1, 
-                        fontWeight = FontWeight.SemiBold
-                    ) 
+                    Column {
+                        Text(
+                            state.project?.title ?: "Loading...", 
+                            maxLines = 1, 
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        if (state.project != null) {
+                            val hours = state.project.timeSpentMillis / (1000 * 60 * 60)
+                            val minutes = (state.project.timeSpentMillis / (1000 * 60)) % 60
+                            Text(
+                                "${hours}h ${minutes}m spent", 
+                                fontSize = 12.sp,
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                            )
+                        }
+                    }
                 },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                    }
+                },
+                actions = {
+                    if (state.project != null) {
+                        TextButton(onClick = { showTimerDialog = true }) {
+                            Text("START SESSION")
+                        }
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -147,6 +166,16 @@ fun ProjectDetailScreen(
             }
         )
     }
+    
+    if (showTimerDialog) {
+        TimerDialog(
+            onDismiss = { showTimerDialog = false },
+            onSaveTime = { timeMillis ->
+                viewModel.addTime(timeMillis)
+                showTimerDialog = false
+            }
+        )
+    }
 }
 
 @Composable
@@ -162,9 +191,10 @@ fun TasksTab(tasks: List<Task>, onToggle: (Task) -> Unit) {
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(tasks) { task ->
+        items(items = tasks, key = { it.id }) { task ->
             Row(
                 modifier = Modifier
+                    .animateItem()
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(12.dp))
                     .background(MaterialTheme.colorScheme.surface)
@@ -199,17 +229,23 @@ fun ResourcesTab(resources: List<Resource>) {
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        items(resources) { resource ->
-            Column(
+        items(items = resources, key = { it.id }) { resource ->
+            Row(
                 modifier = Modifier
+                    .animateItem()
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(16.dp))
+                    .clip(RoundedCornerShape(12.dp))
                     .background(MaterialTheme.colorScheme.surface)
-                    .padding(16.dp)
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(resource.title, fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(resource.url ?: "", color = MaterialTheme.colorScheme.primary, fontSize = 14.sp)
+                Icon(Icons.Default.Link, contentDescription = "Link", tint = MaterialTheme.colorScheme.primary)
+                Spacer(modifier = Modifier.width(16.dp))
+                Column {
+                    Text(resource.title, fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(resource.url ?: "", color = MaterialTheme.colorScheme.primary, fontSize = 14.sp)
+                }
             }
         }
     }
@@ -228,10 +264,11 @@ fun NotesTab(notes: List<Note>) {
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        items(notes) { note ->
+        items(items = notes, key = { it.id }) { note ->
             val dateStr = SimpleDateFormat("MMM dd, HH:mm", Locale.getDefault()).format(Date(note.timestamp))
             Column(
                 modifier = Modifier
+                    .animateItem()
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(16.dp))
                     .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
@@ -322,6 +359,60 @@ fun AddNoteDialog(onDismiss: () -> Unit, onConfirm: (String) -> Unit) {
         },
         confirmButton = {
             Button(onClick = { if (content.isNotBlank()) onConfirm(content) }) { Text("Save") }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text("Cancel") }
+        }
+    )
+}
+
+@Composable
+fun TimerDialog(onDismiss: () -> Unit, onSaveTime: (Long) -> Unit) {
+    var isRunning by remember { mutableStateOf(false) }
+    var elapsedMillis by remember { mutableLongStateOf(0L) }
+
+    LaunchedEffect(isRunning) {
+        if (isRunning) {
+            val startTime = System.currentTimeMillis() - elapsedMillis
+            while (true) {
+                elapsedMillis = System.currentTimeMillis() - startTime
+                kotlinx.coroutines.delay(100L) // Update every 100ms
+            }
+        }
+    }
+
+    AlertDialog(
+        onDismissRequest = { /* Prevent accidental dismiss */ },
+        title = { Text("Study Session") },
+        text = {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                val totalSeconds = elapsedMillis / 1000
+                val hours = totalSeconds / 3600
+                val minutes = (totalSeconds % 3600) / 60
+                val seconds = totalSeconds % 60
+                
+                Text(
+                    text = String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, seconds),
+                    fontSize = 48.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+                Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                    Button(onClick = { isRunning = !isRunning }) {
+                        Text(if (isRunning) "Pause" else "Start")
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            Button(onClick = { 
+                onSaveTime(elapsedMillis)
+                onDismiss() 
+            }) { Text("Save & Exit") }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) { Text("Cancel") }

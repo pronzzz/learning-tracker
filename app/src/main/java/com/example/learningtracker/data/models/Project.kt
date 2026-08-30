@@ -25,5 +25,6 @@ data class Project(
     val description: String,
     val deadline: Long?,
     val progress: Float = 0f, // 0.0 to 1.0
-    val status: String = "ACTIVE" // ACTIVE, COMPLETED, PAUSED
+    val status: String = "ACTIVE", // ACTIVE, COMPLETED, PAUSED
+    val timeSpentMillis: Long = 0L // Time tracking
 )

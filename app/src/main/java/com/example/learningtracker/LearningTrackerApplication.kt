@@ -20,7 +20,7 @@ class LearningTrackerApplication : Application() {
             this,
             AppDatabase::class.java,
             "learning_tracker_db"
-        ).build()
+        ).fallbackToDestructiveMigration().build()
         
         repository = AppRepository(database.appDao())
     }

@@ -40,6 +40,16 @@ class AppRepository(private val appDao: AppDao) {
         }
     }
 
+    suspend fun addTimeSpentToProject(projectId: Long, durationMillis: Long) {
+        withContext(Dispatchers.IO) {
+            appDao.addTimeSpentToProject(projectId, durationMillis)
+        }
+    }
+        withContext(Dispatchers.IO) {
+            appDao.updateProject(project)
+        }
+    }
+
     suspend fun deleteProject(project: Project) {
         withContext(Dispatchers.IO) {
             appDao.deleteProject(project)

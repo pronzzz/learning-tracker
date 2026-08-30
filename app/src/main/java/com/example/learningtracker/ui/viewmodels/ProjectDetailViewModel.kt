@@ -126,4 +126,11 @@ class ProjectDetailViewModel(private val repository: AppRepository) : ViewModel(
             repository.deleteNote(note)
         }
     }
+    
+    fun addTime(durationMillis: Long) {
+        val pid = _projectId.value ?: return
+        viewModelScope.launch {
+            repository.addTimeSpentToProject(pid, durationMillis)
+        }
+    }
 }

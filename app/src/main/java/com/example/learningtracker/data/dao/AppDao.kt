@@ -26,6 +26,9 @@ interface AppDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertProject(project: Project)
 
+    @Query("UPDATE projects SET timeSpentMillis = timeSpentMillis + :durationMillis WHERE id = :projectId")
+    fun addTimeSpentToProject(projectId: Long, durationMillis: Long)
+
     @Update
     fun updateProject(project: Project)
 

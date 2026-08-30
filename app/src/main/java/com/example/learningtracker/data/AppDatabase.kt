@@ -13,7 +13,7 @@ import com.example.learningtracker.data.models.*
         Resource::class,
         Note::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
