@@ -16,7 +16,7 @@ class MainActivity : ComponentActivity() {
 
     enableEdgeToEdge()
     setContent {
-      LearningTrackerTheme { Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) { MainNavigation() } }
+      LearningTrackerTheme { Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) { AppNavigation() } }
     }
   }
 }
