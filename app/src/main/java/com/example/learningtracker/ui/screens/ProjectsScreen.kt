@@ -25,9 +25,14 @@ import com.example.learningtracker.ui.viewmodels.ViewModelFactory
 @Composable
 fun ProjectsScreen(
     modifier: Modifier = Modifier,
+    topicId: Long? = null,
     onProjectClick: (Long) -> Unit = {},
     viewModel: ProjectsViewModel = viewModel(factory = ViewModelFactory())
 ) {
+    LaunchedEffect(topicId) {
+        viewModel.setTopicFilter(topicId)
+    }
+
     val projects by viewModel.projects.collectAsStateWithLifecycle()
     var showAddDialog by remember { mutableStateOf(false) }
 
@@ -89,9 +94,7 @@ fun ProjectsScreen(
         AddProjectDialog(
             onDismiss = { showAddDialog = false },
             onConfirm = { title, description ->
-                // TODO: When inside a specific topic, pass topicId. For now hardcode 1L or ask user.
-                // We'll just hardcode 1L for MVP test
-                viewModel.addProject(topicId = 1L, title = title, description = description, deadline = null)
+                viewModel.addProject(topicId = topicId ?: 1L, title = title, description = description, deadline = null)
                 showAddDialog = false
             }
         )

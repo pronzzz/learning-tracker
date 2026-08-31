@@ -26,6 +26,7 @@ import com.example.learningtracker.ui.viewmodels.ViewModelFactory
 @Composable
 fun TopicsScreen(
     modifier: Modifier = Modifier,
+    onTopicClick: (Long) -> Unit = {},
     viewModel: TopicsViewModel = viewModel(factory = ViewModelFactory())
 ) {
     val topics by viewModel.topics.collectAsStateWithLifecycle()
@@ -65,6 +66,7 @@ fun TopicsScreen(
                 items(items = topics, key = { it.id }) { topic ->
                     TopicCard(
                         topic = topic,
+                        onClick = { onTopicClick(topic.id) },
                         modifier = Modifier.animateItem()
                     )
                 }
@@ -96,13 +98,13 @@ fun TopicsScreen(
 }
 
 @Composable
-fun TopicCard(topic: Topic, modifier: Modifier = Modifier) {
+fun TopicCard(topic: Topic, modifier: Modifier = Modifier, onClick: () -> Unit = {}) {
     Box(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(28.dp))
             .background(MaterialTheme.colorScheme.surface)
-            .clickable { /* Navigate to Topic details / projects */ }
+            .clickable { onClick() }
             .padding(24.dp)
     ) {
         Row(

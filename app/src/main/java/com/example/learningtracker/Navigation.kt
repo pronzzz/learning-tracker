@@ -34,8 +34,8 @@ fun AppNavigation() {
                     label = { Text("Topics") }
                 )
                 NavigationBarItem(
-                    selected = currentRoute == ProjectsRoute,
-                    onClick = { backStack.clear(); backStack.add(ProjectsRoute) },
+                    selected = currentRoute is ProjectsRoute,
+                    onClick = { backStack.clear(); backStack.add(ProjectsRoute()) },
                     icon = { Text("P") },
                     label = { Text("Projects") }
                 )
@@ -52,17 +52,24 @@ fun AppNavigation() {
                         onProjectClick = { projectId -> backStack.add(ProjectDetailRoute(projectId)) }
                     ) 
                 }
-                entry<TopicsRoute> { TopicsScreen(modifier = Modifier.padding(innerPadding)) }
-                entry<ProjectsRoute> { 
+                entry<TopicsRoute> { 
+                    TopicsScreen(
+                        modifier = Modifier.padding(innerPadding),
+                        onTopicClick = { topicId -> backStack.add(ProjectsRoute(topicId)) }
+                    ) 
+                }
+                entry<ProjectsRoute> { route ->
                     ProjectsScreen(
                         modifier = Modifier.padding(innerPadding),
+                        topicId = route.topicId,
                         onProjectClick = { projectId -> backStack.add(ProjectDetailRoute(projectId)) }
                     ) 
                 }
                 entry<ProjectDetailRoute> { route ->
                     com.example.learningtracker.ui.screens.ProjectDetailScreen(
                         projectId = route.projectId,
-                        onNavigateBack = { backStack.removeLastOrNull() }
+                        onNavigateBack = { backStack.removeLastOrNull() },
+                        modifier = Modifier.padding(innerPadding)
                     )
                 }
             },

@@ -36,6 +36,10 @@ class ProjectsViewModel(private val repository: AppRepository) : ViewModel() {
         _selectedTopicId.value = topicId
     }
 
+    fun setTopicFilter(topicId: Long?) {
+        _selectedTopicId.value = topicId
+    }
+
     fun addProject(topicId: Long, title: String, description: String, deadline: Long?) {
         viewModelScope.launch {
             val project = Project(
